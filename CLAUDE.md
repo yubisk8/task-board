@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-`task-board` プロジェクト。現時点ではリポジトリは空であり、コードベースはまだ存在しない。
-セットアップが進んだら、本ファイルにビルド・テスト・実行コマンドとアーキテクチャ概要を追記すること。
+React + TypeScript + Vite で作成したタスクボードアプリ。
+タスクの追加・完了/未完了の切り替え・削除ができ、状態は `localStorage` に永続化される。
 
 ## Git 運用ルール（重要）
 
@@ -28,8 +28,18 @@ git push
 
 ## ビルド / テスト / 実行
 
-（コードベース構築後に追記する。例: ビルドコマンド、リント、テスト全体実行、単一テストの実行方法など）
+```bash
+npm install      # 依存関係のインストール
+npm run dev      # 開発サーバー起動（http://localhost:5173）
+npm run build    # 型チェック（tsc -b）＋本番ビルド（vite build）→ dist/
+npm run preview  # ビルド成果物をローカルでプレビュー
+```
+
+テストランナーは未導入。
 
 ## アーキテクチャ
 
-（複数ファイルを横断して理解する必要のある「全体像」をここに記述する）
+- 状態管理ライブラリは使わず、`src/App.tsx` の `useState` でタスク配列を一元管理する単一コンポーネント構成。
+- タスクは `{ id, text, done }` 型。`id` は `crypto.randomUUID()` で採番。
+- `useEffect` で `tasks` の変化を監視し `localStorage`（キー: `task-board.tasks`）へ保存。初期値は `loadTasks()` で読み込む。
+- 完了済みタスクは `task-item done` クラスが付与され、`src/App.css` でグレー＋取り消し線表示にする。
